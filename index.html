@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabla Periódica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #ffc0a7; }
+        .tabla { 
+            display: grid; 
+            grid-template-columns: repeat(18, minmax(60px, 1fr)); 
+            gap: 6px;
+            justify-items: center;
+        }
+        .card {
+            width: 60px;
+            height: 80px;
+            transition: transform 0.5s;
+            background-color: #fe9f79;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .card-back {
+            display: none;
+        }
+        .card.flipped .card-front {
+            display: none;
+        }
+        .card.flipped .card-back {
+            display: flex;
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+    <h1 class="text-2xl font-bold mb-4">Tabla Periódica</h1>
+    <p class="mb-4 text-center text-gray-700">Haz clic en cada elemento para ver sus valencias.</p>
+    <div id="tabla" class="tabla">
+        <!-- Tarjetas de los elementos se generarán aquí -->
+    </div>
+
+    <script>
+        const elementos = [
+    // Período 1
+    { simbolo: "H", valencias: "±1", col: 1, row: 1 },
+    { simbolo: "He", valencias: "0", col: 18, row: 1 },
+
+    // Período 2
+    { simbolo: "Li", valencias: "1", col: 1, row: 2 },
+    { simbolo: "Be", valencias: "2", col: 2, row: 2 },
+    { simbolo: "B", valencias: "3", col: 13, row: 2 },
+    { simbolo: "C", valencias: "2, ±4", col: 14, row: 2 },
+    { simbolo: "N", valencias: "±3, 5", col: 15, row: 2 },
+    { simbolo: "O", valencias: "±2", col: 16, row: 2 },
+    { simbolo: "F", valencias: "±1", col: 17, row: 2 },
+    { simbolo: "Ne", valencias: "0", col: 18, row: 2 },
+
+    // Período 3
+    { simbolo: "Na", valencias: "1", col: 1, row: 3 },
+    { simbolo: "Mg", valencias: "2", col: 2, row: 3 },
+    { simbolo: "Al", valencias: "3", col: 13, row: 3 },
+    { simbolo: "Si", valencias: "4", col: 14, row: 3 },
+    { simbolo: "P", valencias: "±3, 5", col: 15, row: 3 },
+    { simbolo: "S", valencias: "±2, 4, 6", col: 16, row: 3 },
+    { simbolo: "Cl", valencias: "±1, 3, 5, 7", col: 17, row: 3 },
+    { simbolo: "Ar", valencias: "0", col: 18, row: 3 },
+
+    // Período 4
+    { simbolo: "K", valencias: "1", col: 1, row: 4 },
+    { simbolo: "Ca", valencias: "2", col: 2, row: 4 },
+    { simbolo: "Sc", valencias: "3", col: 3, row: 4 },
+    { simbolo: "Ti", valencias: "4", col: 4, row: 4 },
+    { simbolo: "V", valencias: "2, 3, 5", col: 5, row: 4 },
+    { simbolo: "Cr", valencias: "2, 3, 6", col: 6, row: 4 },
+    { simbolo: "Mn", valencias: "2, 4, 7", col: 7, row: 4 },
+    { simbolo: "Fe", valencias: "2, 3", col: 8, row: 4 },
+    { simbolo: "Co", valencias: "2, 3", col: 9, row: 4 },
+    { simbolo: "Ni", valencias: "2, 3", col: 10, row: 4 },
+    { simbolo: "Cu", valencias: "1, 2", col: 11, row: 4 },
+    { simbolo: "Zn", valencias: "2", col: 12, row: 4 },
+    { simbolo: "Ga", valencias: "3", col: 13, row: 4 },
+    { simbolo: "Ge", valencias: "2, 4", col: 14, row: 4 },
+    { simbolo: "As", valencias: "±3, 5", col: 15, row: 4 },
+    { simbolo: "Se", valencias: "±2, 4, 6", col: 16, row: 4 },
+    { simbolo: "Br", valencias: "±1, 3, 5, 7", col: 17, row: 4 },
+    { simbolo: "Kr", valencias: "0", col: 18, row: 4 },
+
+    // Período 5
+    { simbolo: "Rb", valencias: "1", col: 1, row: 5 },
+    { simbolo: "Sr", valencias: "2", col: 2, row: 5 },
+    { simbolo: "Y", valencias: "3", col: 3, row: 5 },
+    { simbolo: "Zr", valencias: "4", col: 4, row: 5 },
+    { simbolo: "Nb", valencias: "3, 5", col: 5, row: 5 },
+    { simbolo: "Mo", valencias: "2, 4, 6", col: 6, row: 5 },
+    { simbolo: "Tc", valencias: "7", col: 7, row: 5 },
+    { simbolo: "Ru", valencias: "3, 4", col: 8, row: 5 },
+    { simbolo: "Rh", valencias: "3", col: 9, row: 5 },
+    { simbolo: "Pd", valencias: "2, 4", col: 10, row: 5 },
+    { simbolo: "Ag", valencias: "1", col: 11, row: 5 },
+    { simbolo: "Cd", valencias: "2", col: 12, row: 5 },
+    { simbolo: "In", valencias: "3", col: 13, row: 5 },
+    { simbolo: "Sn", valencias: "2, 4", col: 14, row: 5 },
+    { simbolo: "Sb", valencias: "±3, 5", col: 15, row: 5 },
+    { simbolo: "Te", valencias: "±2, 4, 6", col: 16, row: 5 },
+    { simbolo: "I", valencias: "±1, 3, 5, 7", col: 17, row: 5 },
+    { simbolo: "Xe", valencias: "0", col: 18, row: 5 },
+
+    // Período 6
+    { simbolo: "Cs", valencias: "1", col: 1, row: 6 },
+    { simbolo: "Ba", valencias: "2", col: 2, row: 6 },
+    { simbolo: "La", valencias: "3", col: 4, row: 9 },
+    { simbolo: "Hf", valencias: "4", col: 4, row: 6 },
+    { simbolo: "Ta", valencias: "5", col: 5, row: 6 },
+    { simbolo: "W", valencias: "2, 6", col: 6, row: 6 },
+    { simbolo: "Re", valencias: "2, 7", col: 7, row: 6 },
+    { simbolo: "Os", valencias: "3, 4", col: 8, row: 6 },
+    { simbolo: "Ir", valencias: "3, 4", col: 9, row: 6 },
+    { simbolo: "Pt", valencias: "2, 4", col: 10, row: 6 },
+    { simbolo: "Au", valencias: "1, 3", col: 11, row: 6 },
+    { simbolo: "Hg", valencias: "1, 2", col: 12, row: 6 },
+    { simbolo: "Tl", valencias: "1, 3", col: 13, row: 6 },
+    { simbolo: "Pb", valencias: "2, 4", col: 14, row: 6 },
+    { simbolo: "Bi", valencias: "3, 5", col: 15, row: 6 },
+    { simbolo: "Po", valencias: "2, 4", col: 16, row: 6 },
+    { simbolo: "At", valencias: "±1, 3, 5, 7", col: 17, row: 6 },
+    { simbolo: "Rn", valencias: "0", col: 18, row: 6 },
+
+    // Período 7
+    { simbolo: "Fr", valencias: "1", col: 1, row: 7 },
+    { simbolo: "Ra", valencias: "2", col: 2, row: 7 },
+    { simbolo: "Ac", valencias: "3", col: 4, row: 10 },
+    { simbolo: "Rf", valencias: "4", col: 4, row: 7 },
+    { simbolo: "Db", valencias: "5", col: 5, row: 7 },
+    { simbolo: "Sg", valencias: "6", col: 6, row: 7 },
+    { simbolo: "Bh", valencias: "7", col: 7, row: 7 },
+    { simbolo: "Hs", valencias: "8", col: 8, row: 7 },
+    { simbolo: "Mt", valencias: "?", col: 9, row: 7 },
+    { simbolo: "Ds", valencias: "?", col: 10, row: 7 },
+    { simbolo: "Rg", valencias: "?", col: 11, row: 7 },
+    { simbolo: "Cn", valencias: "2", col: 12, row: 7 },
+    { simbolo: "Nh", valencias: "1, 3", col: 13, row: 7 },
+    { simbolo: "Fl", valencias: "2, 4", col: 14, row: 7 },
+    { simbolo: "Mc", valencias: "1, 3", col: 15, row: 7 },
+    { simbolo: "Lv", valencias: "?", col: 16, row: 7 },
+    { simbolo: "Ts", valencias: "?", col: 17, row: 7 },
+    { simbolo: "Og", valencias: "0", col: 18, row: 7 },
+];
+        const tabla = document.getElementById("tabla");
+
+        elementos.forEach(el => {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.style.gridColumn = el.col;
+            card.style.gridRow = el.row;
+            card.innerHTML = `
+                <div class="card-front">${el.simbolo}</div>
+                <div class="card-back">${el.valencias}</div>
+            `;
+            card.addEventListener("click", () => card.classList.toggle("flipped"));
+            tabla.appendChild(card);
+        });
+    </script>
+</body>
+</html>
